@@ -1,47 +1,149 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
+    <div class="background">
+        <canvas id="canvas"></canvas>
+        <style>
+        .canvas {
+            overflow: hidden;
+            background: black;
+            
+            
+        }
+
+        canvas {
+            display: block;
+            position: fixed;
+            z-index: -1; /* Use fixed positioning to cover the viewport */
+            top: 0; /* Align to the top */
+            left: 0; /* Align to the left */
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            z-index: -1; /* Send the canvas to the back */
+        }
+        </style>
+        <script>
+            const canvas = document.getElementById('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            
+            let particles = [];
+            
+            class Particle {
+                constructor(x, y) {
+                    this.x = x;
+                    this.y = y;
+                    this.size = Math.random() * 4 + 1;
+                    this.speedX = Math.random() * 2 - 0.1;
+                    this.speedY = Math.random() * 2 - 0.1;
+                    this.color = 'rgba(255, 255, 255, 0.8)';
+                }
+            
+                update() {
+                    this.x += this.speedX;
+                    this.y += this.speedY;
+            
+                    if (this.size > 0.2) this.size -= 0.1;
+                }
+            
+                draw() {
+                    ctx.fillStyle = this.color;
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+            
+            function init() {
+                for (let i = 0; i < 100; i++) {
+                    particles.push(new Particle(Math.random() * canvas.width, Math.random() * canvas.height));
+                }
+            }
+            
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                particles.forEach((particle, index) => {
+                    particle.update();
+                    particle.draw();
+            
+                    if (particle.size <= 0.2) {
+                        particles.splice(index, 1);
+                        particles.push(new Particle(Math.random() * canvas.width, Math.random() * canvas.height));
+                    }
+                });
+                requestAnimationFrame(animate);
+            }
+            
+            window.addEventListener('resize', () => {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            });
+            
+            init();
+            animate();
+            window.addEventListener('resize', resizeCanvas);
+            resizeCanvas(); // Set initial size
+            init();
+            animate();
+        </script>
+    </div>
+</html>
 <head>
     <meta charset="UTF-8">
     <link rel="icon" type="image/x-icon" href="./favicon.ico">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat With Gemini</title>
+    
     <style>
-        body {
+        body, html {
             font-family: Arial, sans-serif;
-            background-color: #242424;
+            background-color: transparent;
             margin: 0;
             padding: 20px;
-            position: relative;
             margin: 0px;
+            position: relative;
+            background-color: black;
+            box-sizing: border-box;
         }
         #chat-container {
-            max-width: 600px;
             margin: auto;
             background: rgb(31, 31, 31);
             border-radius: 5px;
             box-shadow: 0 0 10px rgb(0, 0, 0);
             padding: 20px;
             color: white;
+            z-index: 1;
+            text-align: center;
+            width: 1300px;
+            border-radius: 5px;
+            border: 2px solid transparent; /* Set a solid border with transparent color */      
+            border-color: pink;
+            height: 765px;
         }
         #messages {
-            height: 300px;
+            height: 625px;
             overflow-y: auto;
             border: 1px solid #555555;
             border-radius: 5px;
             padding: 20px;
-            margin-bottom: 10px;
+            margin-bottom: 2.5px;
             
         }
         .message {
-            margin: 5px 0;
+            margin: 5px 0;     
         }
         .user {
             text-align: right;
             color: blue;
+            font-family: Arial, sans-serif;
+            font-weight: bold;
         }
         .ai {
             text-align: left;
             color: green;
+            font-family: Arial, sans-serif;
+            font-weight: bold;
         }
         #user-input {
             width: calc(100% - 100px);
@@ -49,6 +151,7 @@
             border: 1px solid #3a3a3a;
             border-radius: 5px;
             background-color: #3a3a3a;
+            color: white;
         }
         #send-button {
             padding: 10px;
@@ -61,155 +164,92 @@
         #send-button:hover {
             background-color: #0056b3;
         }
+        
         h1 {
             text-align: center;
             color: antiquewhite;
-        }
-        .back {
+            margin: 0px;
             
-            top: 0;
-            left: 0;
         }
-        .backw {
-            position: absolute;
+        
+        #apikey {
+            width: calc(100% - 100px);
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 500px;
+            background-color: rgb(30, 30, 30);
+            color: white;
+        }
+        #apisubmit {
+            padding: 10px;
+            border: none;
+            background-color: rgb(150, 0, 0);
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #apisubmit:hover {
+            background-color: rgb(100, 0, 0);
         }
         
     </style>
 </head>
-<html>\
-    <div class="back">
-        <style>
-            body {
-                margin: 0;
-                overflow: hidden; /* Prevent scrollbars */
-                background: #111; /* Dark background */
-            }
-    
-            #canvas {
-                display: block; /* Prevent default canvas margins */
-            }
-        </style>
-        <canvas id="canvas"></canvas>
-        <script>
-            const canvas = document.getElementById('canvas');
-            const ctx = canvas.getContext('2d');
-        
-            let width = window.innerWidth;
-            let height = window.innerHeight;
-            canvas.width = width;
-            canvas.height = height;
-        
-            window.addEventListener('resize', () => {
-                width = window.innerWidth;
-                height = window.innerHeight;
-                canvas.width = width;
-                canvas.height = height;
-                init(); // Re-initialize particles on resize
-            });
-        
-        
-            let particles = [];
-            const numParticles = 150;
-            const speed = 0.5; // Adjust movement speed
-        
-            function init() {
-                 particles = []; // Clear old particles
-                for (let i = 0; i < numParticles; i++) {
-                    particles.push({
-                        x: Math.random() * width,
-                        y: Math.random() * height,
-                        radius: Math.random() * 3 + 4,  // Varying sizes
-                        vx: (Math.random() - 0.5) * speed, // Random x velocity
-                        vy: (Math.random() - 0.5) * speed  // Random y velocity
-                    });
-                }
-            }
-        
-            init();  // Initialize particles
-        
-            function draw() {
-                ctx.clearRect(0, 0, width, height); // Clear canvas
-        
-                for (const p of particles) {
-                    ctx.beginPath();
-                    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-        
-        
-                   // Gradient for each particle:  More colorful and interesting effect
-                    const gradient = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.radius);
-                    gradient.addColorStop(0, `rgba(255, 0, ${Math.random() * 255}, 0.7)`); // Example: green to slightly transparent green-yellow
-                    gradient.addColorStop(1, 'rgba(0, 0, 0, 0)'); // Fade to transparent
-                    ctx.fillStyle = gradient;
-        
-        
-                    ctx.fill();
-        
-                    p.x += p.vx;
-                    p.y += p.vy;
-        
-                    // Bounce off edges or wrap around (wrapping is generally nicer for abstract backgrounds)
-                    if (p.x > width + p.radius) p.x = -p.radius; // Wrap around horizontally
-                    if (p.x < -p.radius) p.x = width + p.radius;
-        
-                    if (p.y > height + p.radius) p.y = -p.radius; // Wrap around vertically
-                    if (p.y < -p.radius) p.y = height + p.radius;
-        
-        
-                }
-        
-                requestAnimationFrame(draw); // Animate
-            }
-        
-            draw(); // Start the animation
-        </script>
-    </div>
-</html>
 <body>
-<h1>Gemini AI chat, Reimagined</h1>
+<h1>Gemini AI chat</h1>
+<p style="margin:10px"></p>
 <div id="chat-container">
+    <div class="api">
+        <input type="password" id="apikey" placeholder="Your API key here" />
+        <button id="apisubmit">Use Key</button>
+    </div>
+    <p style="margin:10px"></p>
     <div id="messages"></div>
+    <p style="margin=10px"></p>
     <input type="text" id="user-input" placeholder="Type your message here..." />
     <button id="send-button">Send</button>
 </div>
 
 <script>
+    let apiKey = '';
+
+    document.getElementById('apisubmit').addEventListener('click', () => {
+        apiKey = document.getElementById('apikey').value;
+        if (!apiKey) {
+            alert('Please enter a valid API key.');
+            return;
+        }
+        alert('API key added successfully!');
+    });
+
     document.getElementById('send-button').addEventListener('click', async () => {
-        const userInput = document.getElementById('user-input').value.trim(); // Trim input
+        const userInput = document.getElementById('user-input').value;
         if (!userInput) return;
 
         // Display user message
         displayMessage(userInput, 'user');
         document.getElementById('user-input').value = '';
 
-        // Send request to the Gemini API
+        // Construct the API URL
+        const apiUrl = `http://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+
+        // Send request to the API
         try {
-            const response = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyDvqcs76sozDsBPQ4lf5rNPglAma9xsDp4', {
+            const response = await fetch(apiUrl, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({
-    "contents": [{
-    "parts":[{"text": userInput}]
-    }]
-   }),
+                body: JSON.stringify({ message: userInput }),
             });
 
-            if (!response.ok) {
-                const errorText = await response.text(); // Get the error response body
-                console.error('Error:', response.statusText, errorText);
-                displayMessage('Error: ' + response.statusText + ' - ' + errorText, 'ai');
-                return;
-            }
-
             const data = await response.json();
-            // Adjust based on the actual response structure
-//            if (data.generatedText) { // Check the correct field for the AI's response
-            const aiResponse = data.candidates[0].content.parts[0].text; // Correct path!
-            displayMessage(aiResponse, 'ai'); // Adjust 'generatedText' based on actual response
-//            } else {
-//               displayMessage('Error: No response from AI.', 'ai');
-//            }
+            // Assuming the AI's response is in data.output
+            if (data.output) {
+                displayMessage(data.output, 'ai');
+            } else {
+                displayMessage('Error: No response from AI.', 'ai');
+            }
         } catch (error) {
             displayMessage('Error: ' + error.message, 'ai');
         }
@@ -226,6 +266,4 @@
 </script>
 
 
-
 </body>
-</html>
