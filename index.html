@@ -1,5 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/x-icon" href="./favicon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat With Gemini</title>
     <div class="background">
         <canvas id="canvas"></canvas>
         <style>
@@ -88,13 +93,6 @@
             animate();
         </script>
     </div>
-</html>
-<head>
-    <meta charset="UTF-8">
-    <link rel="icon" type="image/x-icon" href="./favicon.ico">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat With Gemini</title>
-    
     <style>
         body, html {
             font-family: Arial, sans-serif;
@@ -119,10 +117,9 @@
             border-radius: 5px;
             border: 2px solid transparent; /* Set a solid border with transparent color */      
             border-color: pink;
-            height: 765px;
         }
         #messages {
-            height: 625px;
+            height: 500px;
             overflow-y: auto;
             border: 1px solid #555555;
             border-radius: 5px;
@@ -131,7 +128,8 @@
             
         }
         .message {
-            margin: 5px 0;     
+            margin: 5px 0;5
+            
         }
         .user {
             text-align: right;
@@ -168,8 +166,6 @@
         h1 {
             text-align: center;
             color: antiquewhite;
-            margin: 0px;
-            
         }
         
         #apikey {
@@ -197,13 +193,12 @@
 </head>
 <body>
 <h1>Gemini AI chat</h1>
-<p style="margin:10px"></p>
 <div id="chat-container">
     <div class="api">
         <input type="password" id="apikey" placeholder="Your API key here" />
         <button id="apisubmit">Use Key</button>
     </div>
-    <p style="margin:10px"></p>
+    <p style="margin=10px"></p>
     <div id="messages"></div>
     <p style="margin=10px"></p>
     <input type="text" id="user-input" placeholder="Type your message here..." />
@@ -231,7 +226,7 @@
         document.getElementById('user-input').value = '';
 
         // Construct the API URL
-        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+        const apiUrl = `http://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
 
         // Send request to the API
         try {
@@ -240,18 +235,13 @@
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({
-    "contents": [{
-    "parts":[{"text": userInput}]
-    }]
-   }),
+                body: JSON.stringify({"contents": [{"parts": [{"text": "the user input"}]}]}),
             });
 
-
-            const data = await response.json();
+            const text = await response.json();
             // Assuming the AI's response is in data.output
-            if (data.output) {
-                displayMessage(data.output, 'ai');
+            if (text.output) {
+                displayMessage(text.output, 'ai');
             } else {
                 displayMessage('Error: No response from AI.', 'ai');
             }
@@ -271,4 +261,7 @@
 </script>
 
 
+
+
 </body>
+</html>
