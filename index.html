@@ -211,9 +211,10 @@
     <p style="margin:10px"></p>
     <input type="text" id="user-input" placeholder="Type your message here... (It will not save what you said last time. It can't remember things because it's an API)" />
     <button id="send-button">Send</button>
-    <div id="tokens" style="border: 4px; border-radius: 5px; border-color: turquoise;">
-        <div id="inputtokens" style="color: blue; padding: 4px;">Input Tokens: --</div>
-        <div id="outputtokens" style="color: green; padding:4px;">Output Tokens: --</div>
+    <p style="margin:10px"></p>
+    <div id="tokens" style="border: 1px; border-radius: 5px; border-color: turquoise; display: flex;">
+        <div id="inputtokens" style="color: blue; padding: 4px; display: inline-block;">Input Tokens: --</div>
+        <div id="outputtokens" style="color: green; padding:4px; display: inline-block;">Output Tokens: --</div>
     </div>
 </div>
 <script>
@@ -289,7 +290,7 @@
         const messageDiv = document.createElement('div');
         const inputEmpty = document.getElementById('inputtokens')
         messageDiv.id = sender;
-        messageDiv.style = "color: blue; padding: 4px;"
+        messageDiv.style = "color: blue; padding: 4px; display: inline-block;"
         messageDiv.textContent = "Input Tokens: " + message;
         messagesDiv.replaceChild(messageDiv, inputEmpty);
         messagesDiv.scrollTop = messagesDiv.scrollHeight; // Scroll to the bottom
@@ -299,7 +300,7 @@
         const messageDiv = document.createElement('div');
         const outputEmpty = document.getElementById('outputtokens')
         messageDiv.id = sender;
-        messageDiv.style = "color: green; padding:4px;"
+        messageDiv.style = "color: green; padding:4px; display: inline-block;"
         messageDiv.textContent = "Output Tokens: " + message;
         messagesDiv.replaceChild(messageDiv, outputEmpty);
         messagesDiv.scrollTop = messagesDiv.scrollHeight; // Scroll to the bottom
