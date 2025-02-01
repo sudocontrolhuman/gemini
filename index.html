@@ -11,8 +11,6 @@
         .canvas {
             overflow: hidden;
             background: black;
-            
-            
         }
 
         canvas {
@@ -196,6 +194,7 @@
             background-color: rgb(100, 0, 0);
         }
         
+        
     </style>
 </head>
 <body>
@@ -210,8 +209,12 @@
     <p style="margin:10px"></p>
     <div id="messages"></div>
     <p style="margin:10px"></p>
-    <input type="text" id="user-input" placeholder="Type your message here..." />
+    <input type="text" id="user-input" placeholder="Type your message here... (It will not save what you said last time. It can't remember things because it's an API)" />
     <button id="send-button">Send</button>
+    <div id="tokens" style="border: 4px; border-radius: 5px; border-color: turquoise;">
+        <div id="inputtokens" style="color: blue; padding: 4px;">Input Tokens: --</div>
+        <div id="outputtokens" style="color: green; padding:4px;">Output Tokens: --</div>
+    </div>
 </div>
 <script>
     let apiKey = '';
@@ -261,10 +264,12 @@
             // Assuming the response structure contains the generated text
             // Adjust the following line based on the actual response structure
             const generatedText = data.candidates[0].content.parts[0].text; // Adjust this line as needed
-
+            const inputTokens = data.usageMetadata.promptTokenCount;
+            const outputTokens = data.usageMetadata.candidatesTokenCount;
             // Display the generated text from the API
             displayMessage(generatedText, 'api');
-
+            displayinTokens(inputTokens, 'inputtokens')
+            displayoutTokens(outputTokens, 'outputtokens')
         } catch (error) {
             console.error('There was a problem with the fetch operation:', error);
             alert('Error: ' + error.message); // Alert the user about the error
@@ -277,6 +282,26 @@
         messageDiv.className = 'message ' + sender;
         messageDiv.textContent = message;
         messagesDiv.appendChild(messageDiv);
+        messagesDiv.scrollTop = messagesDiv.scrollHeight; // Scroll to the bottom
+    }
+    function displayinTokens(message, sender) {
+        const messagesDiv = document.getElementById('tokens');
+        const messageDiv = document.createElement('div');
+        const inputEmpty = document.getElementById('inputtokens')
+        messageDiv.id = sender;
+        messageDiv.style = "color: blue; padding: 4px;"
+        messageDiv.textContent = "Input Tokens: " + message;
+        messagesDiv.replaceChild(messageDiv, inputEmpty);
+        messagesDiv.scrollTop = messagesDiv.scrollHeight; // Scroll to the bottom
+    }
+    function displayoutTokens(message, sender) {
+        const messagesDiv = document.getElementById('tokens');
+        const messageDiv = document.createElement('div');
+        const outputEmpty = document.getElementById('outputtokens')
+        messageDiv.id = sender;
+        messageDiv.style = "color: green; padding:4px;"
+        messageDiv.textContent = "Output Tokens: " + message;
+        messagesDiv.replaceChild(messageDiv, outputEmpty);
         messagesDiv.scrollTop = messagesDiv.scrollHeight; // Scroll to the bottom
     }
 </script>
