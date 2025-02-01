@@ -110,9 +110,7 @@
             border-radius: 5px;
             box-shadow: 0 0 10px rgb(0, 0, 0);
             padding: 20px;
-            color: white;
             z-index: 1;
-            text-align: center;
             width: 1300px;
             border-radius: 5px;
             border: 2px solid transparent; /* Set a solid border with transparent color */      
@@ -127,21 +125,27 @@
             margin-bottom: 2.5px;
             
         }
+        #api {
+            text-align: center
+        }
         .message {
-            margin: 5px 0;5
-            
+            margin: 5px 0;
         }
         .user {
             text-align: right;
             color: blue;
-            font-family: Arial, sans-serif;
-            font-weight: bold;
         }
-        .ai {
-            text-align: left;
+        .messages#ai {
+            color: green; /* More specific */
+        }
+        .message.api {
             color: green;
-            font-family: Arial, sans-serif;
-            font-weight: bold;
+            
+        }
+        
+        #chat-container #ai {
+            color: green; /* More specific */
+            text-align: left;
         }
         #user-input {
             width: calc(100% - 100px);
@@ -163,10 +167,11 @@
             background-color: #0056b3;
         }
         
-        h1 {
+        .title h1 {
             text-align: center;
             color: antiquewhite;
         }
+       
         
         #apikey {
             width: calc(100% - 100px);
@@ -176,6 +181,7 @@
             width: 500px;
             background-color: rgb(30, 30, 30);
             color: white;
+            float: center;
         }
         #apisubmit {
             padding: 10px;
@@ -184,6 +190,7 @@
             color: white;
             border-radius: 5px;
             cursor: pointer;
+            float: center;
         }
         #apisubmit:hover {
             background-color: rgb(100, 0, 0);
@@ -192,19 +199,20 @@
     </style>
 </head>
 <body>
-<h1>Gemini AI chat</h1>
+<div class="title">
+    <h1>Gemini AI chat</h1>
+</div>
 <div id="chat-container">
-    <div class="api">
+    <div id="api">
         <input type="password" id="apikey" placeholder="Your API key here" />
         <button id="apisubmit">Use Key</button>
     </div>
-    <p style="margin=10px"></p>
+    <p style="margin:10px"></p>
     <div id="messages"></div>
-    <p style="margin=10px"></p>
+    <p style="margin:10px"></p>
     <input type="text" id="user-input" placeholder="Type your message here..." />
     <button id="send-button">Send</button>
 </div>
-
 <script>
     let apiKey = '';
 
@@ -235,18 +243,31 @@
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({"contents": [{"parts": [{"text": "the user input"}]}]}),
+                body: JSON.stringify({
+                    "contents": [{
+                        "parts": [{"text": userInput}] // Use the actual user input
+                    }]
+                }),
             });
 
-            const text = await response.json();
-            // Assuming the AI's response is in data.output
-            if (text.output) {
-                displayMessage(text.output, 'ai');
-            } else {
-                displayMessage('Error: No response from AI.', 'ai');
+            // Check if the response is ok
+            if (!response.ok) {
+                throw new Error('Network response was not ok: ' + response.statusText);
             }
+
+            const data = await response.json();
+            console.log(data); // Log the entire response for debugging
+
+            // Assuming the response structure contains the generated text
+            // Adjust the following line based on the actual response structure
+            const generatedText = data.candidates[0].content.parts[0].text; // Adjust this line as needed
+
+            // Display the generated text from the API
+            displayMessage(generatedText, 'api');
+
         } catch (error) {
-            displayMessage('Error: ' + error.message, 'ai');
+            console.error('There was a problem with the fetch operation:', error);
+            alert('Error: ' + error.message); // Alert the user about the error
         }
     });
 
@@ -259,9 +280,5 @@
         messagesDiv.scrollTop = messagesDiv.scrollHeight; // Scroll to the bottom
     }
 </script>
-
-
-
-
 </body>
 </html>
