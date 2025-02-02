@@ -176,7 +176,7 @@
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: 5px;
-            width: 500px;
+            width: 185px;
             background-color: rgb(30, 30, 30);
             color: white;
             float: center;
@@ -218,11 +218,19 @@
     </div>
 </div>
 <script>
+    function checkStringLength(str, minLength) {
+        if (typeof str !== 'string') {
+            return false; // Not a string, so it fails
+        }
+        return str.length === minLength; // Returns true if length is at least minLength, false otherwise
+    }
+
+
     let apiKey = '';
 
     document.getElementById('apisubmit').addEventListener('click', () => {
         apiKey = document.getElementById('apikey').value;
-        if (!apiKey) {
+        if (!apiKey || !checkStringLength(apiKey, 39)) {
             alert('Please enter a valid API key.');
             return;
         }
