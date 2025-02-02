@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+<head style="background-color: transparent;">
     <meta charset="UTF-8">
     <link rel="icon" type="image/x-icon" href="./favicon.ico">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -115,7 +115,7 @@
             border-color: pink;
         }
         #messages {
-            height: 500px;
+            height: 525px;
             overflow-y: auto;
             border: 1px solid #555555;
             border-radius: 5px;
@@ -197,8 +197,8 @@
         
     </style>
 </head>
-<body>
-<div class="title">
+<body style="background-color: transparent;">
+<div class="title" style="background-color: transparent; position: relative;">
     <h1>Gemini AI chat</h1>
 </div>
 <div id="chat-container">
@@ -226,7 +226,7 @@
             alert('Please enter a valid API key.');
             return;
         }
-        alert('API key added successfully!');
+        alert('API key used!');
     });
 
     document.getElementById('send-button').addEventListener('click', async () => {
@@ -239,7 +239,7 @@
 
         // Construct the API URL
         const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
-
+        console.log('Used:  ', apiUrl)
         // Send request to the API
         try {
             const response = await fetch(apiUrl, {
@@ -257,6 +257,7 @@
             // Check if the response is ok
             if (!response.ok) {
                 throw new Error('Network response was not ok: ' + response.statusText);
+                displayMessage('Error', 'api')
             }
 
             const data = await response.json();
